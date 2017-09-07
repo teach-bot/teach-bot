@@ -13,7 +13,6 @@ var slapp = Slapp({
 
 var normalizedPath = require("path").join(__dirname, "src", "skills");
 require("fs").readdirSync(normalizedPath).forEach(function(file) {
-  console.log('REGISTERING', file);
   require("./src/skills/" + file)(slapp);
 });
 
