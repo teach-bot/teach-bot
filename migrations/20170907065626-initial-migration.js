@@ -16,9 +16,6 @@ module.exports = {
         updatedAt: {
           type: Sequelize.DATE
         },
-        updatedAt: {
-          type: Sequelize.STRING
-        },
         teamId: {
           type: Sequelize.STRING
         },
@@ -35,10 +32,27 @@ module.exports = {
       {
         schema: 'public'                      // default: public, PostgreSQL only.
       }
-    )
+    ).then(async () => {
+      return queryInterface.createTable(
+        'convos', {
+          id: {
+            type: Sequelize.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+          },
+          key: {
+            type: Sequelize.STRING
+          },
+          value: {
+            type: Sequelize.STRING
+          },
+      });
+    });
   },
 
   down: function (queryInterface, Sequelize) {
-    return queryInterface.dropTable('teams');
+    return queryInterface.dropTable('teams').then(async () => {
+      return queryInterface.dropTable('convos')
+    });
   }
 };

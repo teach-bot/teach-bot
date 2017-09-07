@@ -9,7 +9,10 @@
     "test": "npm run test:unit",
     "test:uint": "mocha tests/unit",
     "test:int": "",
-    "test:watch": ""
+    "test:watch": "",
+    "migrate": "npm run migrate:up",
+    "migrate:up": "sequelize db:migrate",
+    "migrate:down": "sequelize db:migrate:undo"
   },
   "repository": {
     "type": "git",

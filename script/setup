@@ -27,6 +27,8 @@ if [ "$(uname)" == "Darwin" ]; then
   echo "Installing dependencies..."
   cd $(dirname $0)/..
   npm install
+  npm run migrate
+
 else
   echo "Non mac setup script not supported, please see the README.md for details on setting your machine."
   echo "Contributions welcome!!!"

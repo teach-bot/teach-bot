@@ -1,0 +1,30 @@
+#!/usr/bin/env node
+
+
+(async () => {
+
+  const env = require('node-env-file')
+  env(__dirname + '/../.env');
+
+  if (process.env.DEV_TEAM_ID === undefined || process.env.DEV_APP_TOKEN === undefined || process.env.DEV_BOT_TOKEN === undefined || process.env.DEV_BOT_USER_ID  === undefined) {
+    console.log('Please be sure to set DEV_TEAM_ID, DEV_APP_TOKEN, DEV_BOT_TOKEN, and DEV_BOT_USER_ID in your .env file');
+    process.exit(1);
+  }
+
+  const db = require('../src/db');
+  let team = await db.Team.findOne({
+    where: {
+      teamId: process.env.DEV_TEAM_ID
+    }
+  });
+
+  if (!team) {
+    await db.Team.create({
+      teamId: process.env.DEV_TEAM_ID,
+      appToken: process.env.DEV_APP_TOKEN,
+      botToken: process.env.DEV_BOT_TOKEN,
+      botUserId: process.env.DEV_BOT_USER_ID,
+    });
+  }
+  process.exit(0);
+})()
