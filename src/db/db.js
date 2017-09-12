@@ -1,19 +1,10 @@
-const Sequelize = require('sequelize');
+const path = require('path')
+const Sequelize = require('sequelize')
 
 const env = require('node-env-file')
-env(__dirname + '/../../.env');
+env(path.join(process.cwd(), '/.env'))
 
-console.log('process.env.DATABASE_NAME', process.env.DATABASE_NAME);
-
-if (process.env.NODE_ENV == 'test') {
-  process.env.DATABASE_NAME = process.env.DATABASE_NAME + '_test';
-}
-
-
-const sequelize = new Sequelize(
-  process.env.DATABASE_NAME,
-  process.env.DATABASE_USERNAME,
-  process.env.DATABASE_PASSWORD,
-  {dialect: 'postgres'}
-);
+const databaseURI = process.env.NODE_ENV === 'test' ? process.env.DATABASE_URL_TEST : process.env.DATABASE_URL
+console.log('DATABASE URI: ', databaseURI)
+const sequelize = new Sequelize(databaseURI);
 module.exports = sequelize

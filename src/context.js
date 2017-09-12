@@ -18,6 +18,6 @@ module.exports = async (req, res, next) => {
     });
     next()
   } else {
-    res.end('Error');
+    next(new Error('Unable to find team'))
   }
 }

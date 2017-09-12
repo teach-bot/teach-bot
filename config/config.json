@@ -1,16 +1,8 @@
 {
   "development": {
-    "username": "teachbot",
-    "password": "teachbot",
-    "database": "teachbot",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
+    "use_env_variable": "DATABASE_URL"
   },
   "test": {
-    "username": "teachbot",
-    "password": "teachbot",
-    "database": "teachbot_test",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
+    "use_env_variable": "DATABASE_URL_TEST"
   }
 }
