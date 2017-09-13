@@ -6,13 +6,27 @@
   "scripts": {
     "start": "node index.js",
     "start:dev": "DEBUG=true nodemon index.js",
-    "test": "npm run test:unit",
+    "test": "npm run lint && npm run test:int && npm run test:unint",
     "test:uint": "mocha tests/unit",
     "test:int": "source .env && NODE_ENV=test mocha tests/int",
     "test:watch": "mocha -w tests/unit",
+    "lint": "standard",
+    "lint:fix": "standard --fix",
     "migrate": "npm run migrate:up",
     "migrate:up": "sequelize db:migrate",
     "migrate:down": "sequelize db:migrate:undo"
+  },
+  "standard": {
+    "globals": [
+      "describe",
+      "context",
+      "before",
+      "beforeEach",
+      "after",
+      "afterEach",
+      "it",
+      "expect"
+    ]
   },
   "repository": {
     "type": "git",
@@ -32,7 +46,7 @@
   "dependencies": {
     "express": "^4.15.4",
     "node-env-file": "^0.1.8",
-    "pg": "^7.3.0",
+    "pg": "6.4.1",
     "sequelize": "^4.8.0",
     "sinon": "^3.2.1",
     "slapp": "^2.5.0"
@@ -42,6 +56,7 @@
     "mocha": "^3.5.0",
     "nodemon": "^1.12.0",
     "sequelize-cli": "^2.8.0",
-    "sinon-chai": "^2.13.0"
+    "sinon-chai": "^2.13.0",
+    "standard": "^10.0.3"
   }
 }

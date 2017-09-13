@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 module.exports = {
   up: function (queryInterface, Sequelize) {
@@ -27,7 +27,7 @@ module.exports = {
         },
         botUserId: {
           type: Sequelize.STRING
-        },
+        }
       },
       {
         schema: 'public'                      // default: public, PostgreSQL only.
@@ -45,14 +45,14 @@ module.exports = {
           },
           value: {
             type: Sequelize.STRING
-          },
-      });
-    });
+          }
+        })
+    })
   },
 
   down: function (queryInterface, Sequelize) {
     return queryInterface.dropTable('teams').then(async () => {
       return queryInterface.dropTable('convos')
-    });
+    })
   }
-};
+}

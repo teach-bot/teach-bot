@@ -1,10 +1,9 @@
 const Team = require('./team')
 const Convo = require('./convo')
 
-
 const models = {
   Team,
-  Convo,
+  Convo
 }
 
 module.exports = Object.assign({},
