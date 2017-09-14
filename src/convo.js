@@ -1,7 +1,7 @@
 const { Convo } = require('./db')
 
 module.exports = {
-  set(id, params, callback) {
+  set (id, params, callback) {
     // TODO: This can create a race condition. Using upsert could work
     callback = callback || (() => {})
     params.id = id
@@ -13,7 +13,7 @@ module.exports = {
       } else {
         row.updateAttributes(defaults).then(function (updated) {
           callback()
-        });
+        })
       }
     })
   },
@@ -32,4 +32,3 @@ module.exports = {
     })
   }
 }
-

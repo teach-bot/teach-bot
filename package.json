@@ -7,9 +7,9 @@
     "start": "node index.js",
     "start:dev": "DEBUG=true nodemon index.js",
     "test": "npm run lint && npm run test:int && npm run test:unint",
-    "test:uint": "mocha tests/unit",
-    "test:int": "source .env && NODE_ENV=test mocha tests/int",
-    "test:watch": "mocha -w tests/unit",
+    "test:unit": "NODE_ENV=test mocha tests/unit/**/*.js",
+    "test:int": "source .env && NODE_ENV=test mocha tests/int/**/*.js",
+    "test:watch": "mocha -w tests/unit/**/*.js",
     "lint": "standard",
     "lint:fix": "standard --fix",
     "migrate": "npm run migrate:up",
@@ -57,6 +57,7 @@
     "nodemon": "^1.12.0",
     "sequelize-cli": "^2.8.0",
     "sinon-chai": "^2.13.0",
-    "standard": "^10.0.3"
+    "standard": "^10.0.3",
+    "supertest": "^3.0.0"
   }
 }
