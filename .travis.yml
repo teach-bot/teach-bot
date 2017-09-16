@@ -1,17 +1,13 @@
 language: node_js
 node_js:
-  - "7.7.1"
-
+- 7.7.1
 before_script:
-  - psql -c 'create database teachbot_test;' -U postgres && touch .env
-
+- psql -c 'create database teachbot_test;' -U postgres && touch .env
 before_install:
 - npm install -g npm@5
-
 notifications:
   email: false
-
+  slack:
+    secure: Oi0ZCaXL0PLMxWefmi5t+rRAbKBStQS7I8SIAgCqAF+W5ZTD8Rk4jtuQTkc453/Zx4SfEgcM8rji8Ja/rd7krTLZ95Gsb1MRivX5/7XJD3lPYo5cLSAOEMvQ8bYuv8dl9KeeaVLw5rVaUINQkQJg4jCu4KKrWneKOkRtOtiki3s/8NqTRaj7iA5ziW/P259D4vOl3nAyGSXC+m2T6GFwKxPdfvrkkGFczlDZU/3yuMvJwmgSFfoH6JUvrZTLYDmhGyl/jEwBlJagxUtA8vBJi4ZF20JywZVvQ3Nvt95JwGzV/ld+U/Q808kMnniZSGC0mF6uw3qcyh90pOXox1NLYJDpEJGtdoqZPR5q2cPT3lE3kSCXBfURdZqZIzfYSA+s6llwacC7/C3dM84M8uf3b6uxkJTVPYUuL5GVlrnOHKYmUMg23H/jYnklQJXTcBiwQlCe20IqU+7Hh35OwdM7AK85WPNCD8VYwuB2Uqwzmn8wa71hnWV28iivjmXB4cRKiUUV1y93F00KsCTHlwJDNo/dLyyxPt9yvWm+snbhEaJ97aL3wddsrWg3ojEjocRuy6uCoJlUw6etz/LKA4coIeZU9wTyn7EcIn/5OgWt4FgItmZLXGQx/eRZbQclHmPAiiRbLjpiZkB3hF6EeXp7iPe2fYmlXCc97JBoNOinC+I=
 services:
-  - postgresql
-
-
+- postgresql
