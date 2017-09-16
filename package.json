@@ -57,6 +57,7 @@
     "nodemon": "^1.12.1",
     "sequelize-cli": "^2.8.0",
     "sinon-chai": "^2.13.0",
+    "slack": "^8.4.1",
     "standard": "^10.0.3",
     "supertest": "^3.0.0"
   }
