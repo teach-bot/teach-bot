@@ -13,7 +13,7 @@ describe('boomtown', () => {
   describe('with correct value', () => {
     it('should reply then die', async () => {
       let directMessageCopy = JSON.parse(JSON.stringify(directMessage))
-      directMessageCopy.event.text = 'boomtown '+process.env.DEV_BOOMTOWN
+      directMessageCopy.event.text = 'boomtown ' + process.env.DEV_BOOMTOWN
       let msgSpy
       try {
         msgSpy = await slappHelper.sendEvent(directMessageCopy)
