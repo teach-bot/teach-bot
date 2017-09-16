@@ -17,6 +17,11 @@ var slapp = Slapp({
   context: context,
   log: true,
   colors: true
+  logger: (app, opts) => {
+    app.on('error', (msg) => {
+      Raven.captureException(e)
+    })
+  }
 })
 
 var normalizedPath = require('path').join(__dirname, 'src', 'skills')
