@@ -1,11 +1,12 @@
 language: node_js
+node_js:
+  - "7.7.1"
 
 before_script:
   - psql -c 'create database teachbot_test;' -U postgres && touch .env
 
 before_install:
-  - nvm install 8.
-  - npm update -g npm
+- npm install -g npm@5
 
 services:
   - postgresql
