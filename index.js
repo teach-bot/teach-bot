@@ -16,10 +16,10 @@ var slapp = Slapp({
   verify_token: process.env.NODE_ENV !== 'test' ? process.env.SLAPP_VERIFY_TOKEN : null,
   context: context,
   log: true,
-  colors: true
+  colors: true,
   logger: (app, opts) => {
     app.on('error', (msg) => {
-      Raven.captureException(e)
+      Raven.captureException(msg)
     })
   }
 })
