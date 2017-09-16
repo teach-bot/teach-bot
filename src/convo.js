@@ -7,7 +7,7 @@ module.exports = {
     params.id = id
     let serializedValue = JSON.stringify(params)
     let defaults = { key: id, value: serializedValue }
-    Convo.findOrCreate({where: { key: id}, defaults}).spread(function (row, created) {
+    Convo.findOrCreate({where: {key: id}, defaults}).spread((row, created) => {
       if (created) {
         callback()
       } else {

@@ -1,6 +1,5 @@
 
 const chai = require('chai')
-const sinon = require('sinon')
 const expect = chai.expect
 
 const db = require('../../src/db')
@@ -59,6 +58,7 @@ describe('convo', () => {
     it('deletes the convo when it exits', (done) => {
       new db.Convo({key: 'owowo', value: '{"a": "b"}'}).save().then((success) => {
         convo.del('owowo', (error) => {
+          expect(error).to.be.an('undefined')
           // See if the value exits
           db.Convo.findOne({where: {key: 'owowo'}}).then((row) => {
             expect(row).to.be.a('null')
@@ -70,6 +70,7 @@ describe('convo', () => {
 
     it('silently fail if the convo does not exits', (done) => {
       convo.del('pwoal', (error) => {
+        expect(error).to.be.an('undefined')
         done()
       })
     })

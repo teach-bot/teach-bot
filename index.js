@@ -6,7 +6,7 @@ env(resolve(__dirname, '.env'))
 const context = require('./src/context.js')
 
 var slapp = Slapp({
-  verify_token: process.env.SLACK_VERIFY_TOKEN,
+  verify_token: process.env.NODE_ENV !== 'test' ? process.env.SLAPP_VERIFY_TOKEN : null,
   context: context,
   log: true,
   colors: true

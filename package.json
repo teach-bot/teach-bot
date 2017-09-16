@@ -6,9 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "start:dev": "DEBUG=true nodemon index.js",
-    "test": "npm run lint && npm run test:int && npm run test:unint",
-    "test:unit": "NODE_ENV=test mocha tests/unit/**/*.js",
-    "test:int": "source .env && NODE_ENV=test mocha tests/int/**/*.js",
+    "test": "npm run lint && npm run test:int && npm run test:unit",
+    "test:unit": "NODE_ENV=test mocha --recursive tests/unit/",
+    "test:int": "source .env && NODE_ENV=test mocha --recursive tests/int/",
     "test:watch": "mocha -w tests/unit/**/*.js",
     "lint": "standard",
     "lint:fix": "standard --fix",
