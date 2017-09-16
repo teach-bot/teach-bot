@@ -14,7 +14,8 @@
     "lint:fix": "standard --fix",
     "migrate": "npm run migrate:up",
     "migrate:up": "sequelize db:migrate",
-    "migrate:down": "sequelize db:migrate:undo"
+    "migrate:down": "sequelize db:migrate:undo",
+    "postinstall": "script/postinstall"
   },
   "standard": {
     "globals": [
@@ -44,6 +45,7 @@
   },
   "homepage": "https://github.com/teach-bot/teach-bot#readme",
   "dependencies": {
+    "blanket": "^1.2.3",
     "express": "^4.15.4",
     "node-env-file": "^0.1.7",
     "pg": "6.4.1",
