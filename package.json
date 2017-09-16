@@ -49,6 +49,7 @@
     "express": "^4.15.4",
     "node-env-file": "^0.1.7",
     "pg": "6.4.1",
+    "raven": "^2.1.2",
     "sequelize": "^4.8.4",
     "sinon": "^3.2.1",
     "slapp": "^2.5.0"
