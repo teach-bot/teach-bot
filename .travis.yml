@@ -7,4 +7,5 @@ node_js:
   - 0.8
 
 before_script:
+  - npm update -g npm
   - psql -c 'create database teachbot_test;' -U postgres && touch .env
