@@ -31,12 +31,23 @@ class SlappHelper {
     this.slapp.attachToExpress(this.app)
   }
 
-  async sendEvent (payload) {
-    let msgSpy = sinon.spy(slack.chat, 'postMessage')
-    await request(this.app)
-        .post('/slack/event').send(payload)
-    msgSpy.restore()
-    return msgSpy
+  async sendEvent (payload, command=false) {
+    if(command) {
+      console.log("COMMANDELJKWEL")
+      let msgSpy = sinon.spy(slack.chat, 'postMessage')
+      console.log('Llk', slack.chat.postMessage)
+      console.log('PAYLOAD', payload)
+      await request(this.app)
+          .post('/slack/command').type('form').send(payload)
+      // msgSpy.restore()
+      return msgSpy
+    } else {
+      let msgSpy = sinon.spy(slack.chat, 'postMessage')
+      await request(this.app)
+          .post('/slack/event').send(payload)
+      // msgSpy.restore()
+      return msgSpy
+    }
   }
 }
 

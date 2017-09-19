@@ -1,0 +1,13 @@
+{
+  "token": "XXXXXXXXXXXXXXXXXXXXXXX",
+  "team_id": "TXXXXXXXX",
+  "team_domain": "teach-bot-playground",
+  "channel_id": "DXXXXXXXX",
+  "channel_name": "directmessage",
+  "user_id": "UXXXXXXXX",
+  "user_name": "irfan",
+  "command": "/assignment",
+  "text": "list",
+  "response_url": "http://slack.com/hooksorsomething",
+  "trigger_id": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+}

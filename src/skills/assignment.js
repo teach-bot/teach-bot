@@ -3,6 +3,7 @@ const db = require('../db')
 // CREATE ASSIGNMENT
 module.exports = (slapp) => {
   slapp.command('/assignment', 'create(.*)', (msg, text, assignmentName) => {
+    console.log("I MADE IT FAM")
     if (assignmentName === '') {
       msg.say('Oops! try again, but give the assignment a title `/assignment create AssignmentName`')
     } else {
