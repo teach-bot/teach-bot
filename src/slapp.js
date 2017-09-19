@@ -1,3 +1,4 @@
+const Raven = require('raven')
 const Slapp = require('slapp')
 
 class SlappExtended extends Slapp {
@@ -29,4 +30,4 @@ class SlappExtended extends Slapp {
     this.message = this.message.bind(this)
   }
 }
-modules.export = SlappExtended
+module.exports = SlappExtended
