@@ -44,6 +44,12 @@ module.exports = {
               key: 'id'
             }
           },
+          createdAt: {
+            type: Sequelize.DATE
+          },
+          updatedAt: {
+            type: Sequelize.DATE
+          },
           userId: { type: Sequelize.STRING },
           submissionLink: { type: Sequelize.STRING },
           teamId: { type: Sequelize.INTEGER }

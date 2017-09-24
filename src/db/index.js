@@ -6,7 +6,8 @@ const Submission = require('./submission')
 const models = {
   Team,
   Convo,
-  Assignment
+  Assignment,
+  Submission
 }
 
 Assignment.hasMany(Submission, {foreignKey: 'assignmentId', sourceKey: 'id'})

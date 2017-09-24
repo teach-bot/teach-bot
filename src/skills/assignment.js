@@ -130,7 +130,7 @@ slapp.action('submit_assignment_callback', 'answer', (msg, value) => {
 /// SUBMIT ASSIGNMENT PT 3
 // register a route handler
 slapp.route('handleSubmission', (msg, assignment) => {
-  // respond with a random entry from array
+  db.Submission.create({assignmentId: assignment.id, userId: msg.user_id})
   console.log('submitting assignmeent', assignment.name)
   msg.say(['Me too', 'Noted', 'That is interesting'])
 })
