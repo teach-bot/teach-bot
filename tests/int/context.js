@@ -29,7 +29,7 @@ describe('context', () => {
   })
 
   describe('when team does not exist', () => {
-    it.only('errors out', async () => {
+    it('errors out', async () => {
       let req = {slapp: {meta: {team_id: 'xyz'}}}
       let res = {end: sinon.spy()}
       await context(req, res, () => {})
