@@ -46,6 +46,21 @@ class NockSlappHelper {
     await request(this.app)
         .post('/slack/event').send(payload)
   }
+
+  async eventExpectCommmand (payload, matcher) {
+    nock('https://slack.com')
+      .post('/api/chat.postMessage', matcher)
+      .reply(200, JSON.stringify({
+        'ok': true,
+        'ts': '1405895017.000506',
+        'channel': 'C024BE91L',
+        'message': {
+          'text': 'SJFDLS'
+        }
+      }))
+    await request(this.app)
+        .post('/slack/command').send(payload)
+  }
 }
 
 class SlappHelper {
