@@ -33,9 +33,7 @@ describe('context', () => {
       let req = {slapp: {meta: {team_id: 'xyz'}}}
       let res = {end: sinon.spy()}
       await context(req, res, () => {})
-      expect(res.end).to.have.been.calledWith(
-        sinon.match.instanceOf(Error).and(sinon.match.has('message', 'Error'))
-      )
+      expect(res.end).to.have.been.calledWith('Error')
     })
   })
 })
