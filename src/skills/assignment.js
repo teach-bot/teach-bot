@@ -1,8 +1,18 @@
 const db = require('../db')
 
+// module.exports = (slapp) => {
+
+//   console.log(';AAAAAAAAAAAAAAAAAAAAA')
+//   slapp.command('/assignment', 'create(.*)', (msg, text, assignmentName) => {
+//     console.log('sfdlk;jljkfsdjlksfdsfdjlksdfjlkljksdfjlk')
+//   })
+
+// }
+
 // CREATE ASSIGNMENT
 module.exports = (slapp) => {
   slapp.command('/assignment', 'create(.*)', (msg, text, assignmentName) => {
+    console.log('ljdsfljkkkkkkkkkkkkkkkkkkk')
     if (assignmentName === '') {
       msg.say('Oops! try again, but give the assignment a title `/assignment create AssignmentName`')
     } else {

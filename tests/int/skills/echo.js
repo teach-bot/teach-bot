@@ -1,21 +1,24 @@
 const echo = require('../../../src/skills/echo')
 const directMessage = require('../../fixtures/direct_message')
-const { NockSlappHelper } = require('../helpers')
+const SlappIntegrationHelper = require('../../../slapp-integration-helper')
 const { expect } = require('chai')
+
+let yes = (_) => { return true }
 
 describe('echo', () => {
   let slappHelper
-  beforeEach(() => {
-    slappHelper = new NockSlappHelper(echo)
+  beforeEach(async () => {
+    slappHelper = new SlappIntegrationHelper(echo)
+  })
+  afterEach(async () => {
+    slappHelper.cleanUp()
   })
 
   describe('without text to echo', () => {
     it('should respond with help text', async () => {
-      let matcher = (body) => {
+      await slappHelper.expectPostMessage(yes, (body) => {
         expect(body.text).to.include('Looks like you would')
-        return true
-      }
-      await slappHelper.sendEvent(directMessage, matcher)
+      }).sendMessage(directMessage)
     })
   })
 
@@ -23,11 +26,9 @@ describe('echo', () => {
     it('should with echo text', async () => {
       let directMessageCopy = JSON.parse(JSON.stringify(directMessage))
       directMessageCopy.event.text = 'echo hello world'
-      let matcher = (body) => {
+      await slappHelper.expectPostMessage(yes, (body) => {
         expect(body.text).to.eql('echo hello world')
-        return true
-      }
-      await slappHelper.sendEvent(directMessage, matcher)
+      }).sendMessage(directMessage)
     })
   })
 })

@@ -1,15 +1,20 @@
 
 const assignment = require('../../../src/skills/assignment')
 const slashCommand = require('../../fixtures/slash_command')
-const { NockSlappHelper } = require('../helpers')
+const SlappIntegrationHelper = require('../../../slapp-integration-helper')
 const { expect } = require('chai')
 const db = require('../../../src/db')
+
+let yes = (_) => { return true }
 
 describe('assignment', () => {
   let slappHelper
   beforeEach(async () => {
-    slappHelper = new NockSlappHelper(assignment)
+    slappHelper = new SlappIntegrationHelper(assignment)
     await db.Assignment.sync({ force: true })
+  })
+  afterEach(async () => {
+    slappHelper.cleanUp()
   })
 
   describe('create with name', () => {
@@ -17,12 +22,9 @@ describe('assignment', () => {
       let slashCommandCopy = JSON.parse(JSON.stringify(slashCommand))
       slashCommandCopy.command = '/assignment'
       slashCommandCopy.text = 'create name'
-
-      let matcher = (body) => {
+      await slappHelper.expectPostMessage(yes, (body) => {
         expect(body.text).to.eql('Creating Assignment!')
-        return true
-      }
-      await slappHelper.eventExpectCommmand(slashCommandCopy, matcher)
+      }).sendCommand(slashCommandCopy)
     })
   })
 })

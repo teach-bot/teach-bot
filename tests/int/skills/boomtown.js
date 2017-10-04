@@ -1,25 +1,29 @@
 
 const boomtown = require('../../../src/skills/boomtown')
 const directMessage = require('../../fixtures/direct_message')
-const { NockSlappHelper } = require('../helpers')
+const SlappIntegrationHelper = require('../../../slapp-integration-helper')
 const { expect } = require('chai')
+
+let yes = (_) => { return true }
 
 describe('boomtown', () => {
   let slappHelper
-  beforeEach(() => {
-    slappHelper = new NockSlappHelper(boomtown)
+  beforeEach(async () => {
+    slappHelper = new SlappIntegrationHelper(boomtown)
+  })
+  afterEach(async () => {
+    slappHelper.cleanUp()
   })
 
   describe('with correct value', () => {
     it('should reply then die', async () => {
       let directMessageCopy = JSON.parse(JSON.stringify(directMessage))
       directMessageCopy.event.text = 'boomtown ' + process.env.DEV_BOOMTOWN
-      let matcher = (body) => {
+      slappHelper.expectPostMessage(yes, (body) => {
         expect(body.text).to.eql('About to die...')
-        return true
-      }
+      })
       try {
-        await slappHelper.sendEvent(directMessageCopy, matcher)
+        await slappHelper.sendMessage(directMessageCopy)
       } catch (e) {
         expect(e).to.be.an('error')
       }
@@ -30,10 +34,7 @@ describe('boomtown', () => {
     it('should not respond', async () => {
       let directMessageCopy = JSON.parse(JSON.stringify(directMessage))
       directMessageCopy.event.text = 'boomtown abcdef'
-      let matcher = (body) => {
-        throw Error('Should not send request')
-      }
-      await slappHelper.sendEvent(directMessageCopy, matcher)
+      await slappHelper.sendMessage(directMessageCopy)
     })
   })
 })
