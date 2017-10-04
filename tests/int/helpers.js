@@ -31,9 +31,9 @@ class SlappHelper {
     this.slapp.attachToExpress(this.app)
   }
 
-  async sendEvent (payload, command=false) {
-    if(command) {
-      console.log("COMMANDELJKWEL")
+  async sendEvent (payload, command = false) {
+    if (command) {
+      console.log('COMMANDELJKWEL')
       let msgSpy = sinon.spy(slack.chat, 'postMessage')
       console.log('Llk', slack.chat.postMessage)
       console.log('PAYLOAD', payload)

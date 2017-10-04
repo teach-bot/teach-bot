@@ -7,7 +7,7 @@ const db = require('../../../src/db')
 
 describe('assignment', () => {
   let slappHelper
-  beforeEach( async () => {
+  beforeEach(async () => {
     slappHelper = new SlappHelper(assignment)
     await db.Assignment.sync({ force: true })
   })
