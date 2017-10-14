@@ -19,6 +19,9 @@ module.exports = {
         name: {
           type: Sequelize.STRING
         },
+        sheetId: {
+          type: Sequelize.STRING
+        },
         closed: {
           type: Sequelize.BOOLEAN
         },

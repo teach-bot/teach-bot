@@ -1,5 +1,5 @@
 const db = require('../db')
-
+const drive = require('../google-drive/drive.js')
 // module.exports = (slapp) => {
 
 //   console.log(';AAAAAAAAAAAAAAAAAAAAA')
@@ -11,13 +11,18 @@ const db = require('../db')
 
 // CREATE ASSIGNMENT
 module.exports = (slapp) => {
-  slapp.command('/assignment', 'create(.*)', (msg, text, assignmentName) => {
-    console.log('ljdsfljkkkkkkkkkkkkkkkkkkk')
+  slapp.command('/assignment', 'create(.*)', async (msg, text, assignmentName) => {
+    console.log('Attempt to Create Assignment')
     if (assignmentName === '') {
       msg.say('Oops! try again, but give the assignment a title `/assignment create AssignmentName`')
     } else {
-      msg.say('Creating Assignment' + assignmentName)
-      db.Assignment.create({name: assignmentName.trim(), closed: false, teamId: msg.team_id})
+      var sheetId = await drive.createAssignment(assignmentName)
+      if(sheetId != null) {
+        msg.say('Creating Assignment' + assignmentName)
+        db.Assignment.create({name: assignmentName.trim(), closed: false, teamId: msg.team_id, sheetId:sheetId})
+      }else {
+        console.log('Something went wrong with the sheets API call')
+      }
     }
   })
 
