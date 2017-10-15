@@ -8,7 +8,7 @@ module.exports = (slapp) => {
     timeOptions.push({name: 'timeOption', text: '2 hrs', type: 'button', value: '2'})
     timeOptions.push({name: 'timeOption', text: '2+ hrs', type: 'button', value: '3'})
     msg.say({
-      text:" How long do you plan on working?",
+      text: 'How long do you plan on working?',
       attachments: [
         {
           fallback: 'Oops, this feature is not working',
@@ -19,12 +19,11 @@ module.exports = (slapp) => {
     }).route('')
   })
 
-
   slapp.action('timesheet_start_callback', 'timeOption', (msg, value) => {
-    msg.say("Great, I'll notify you when your *" + value + " hour* session is over! Let me know if you finish early with `/timesheet stop`")
+    msg.say('Great, I will notify you when your *' + value + ' hour* session is over! Let me know if you finish early with `/timesheet stop`')
   })
 
   slapp.command('/timesheet', 'stop', (msg) => {
-    msg.say("Logged you down for *0.75* hours, from 6:03 PM- 6:47 PM")
+    msg.say('Logged you down for *0.75* hours, from 6:03 PM- 6:47 PM')
   })
 }
