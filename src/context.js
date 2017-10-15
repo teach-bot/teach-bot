@@ -10,6 +10,6 @@ module.exports = async (req, res, next) => {
     })
     next()
   } else {
-    res.end(new Error('Error'))
+    res.end('Error')
   }
 }

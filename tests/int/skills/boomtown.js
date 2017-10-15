@@ -1,28 +1,32 @@
 
 const boomtown = require('../../../src/skills/boomtown')
 const directMessage = require('../../fixtures/direct_message')
-const { SlappHelper } = require('../helpers')
+const SlappIntegrationHelper = require('../../../slapp-integration-helper')
 const { expect } = require('chai')
+
+let yes = (_) => { return true }
 
 describe('boomtown', () => {
   let slappHelper
-  beforeEach(() => {
-    slappHelper = new SlappHelper(boomtown)
+  beforeEach(async () => {
+    slappHelper = new SlappIntegrationHelper(boomtown)
+  })
+  afterEach(async () => {
+    slappHelper.cleanUp()
   })
 
   describe('with correct value', () => {
     it('should reply then die', async () => {
       let directMessageCopy = JSON.parse(JSON.stringify(directMessage))
       directMessageCopy.event.text = 'boomtown ' + process.env.DEV_BOOMTOWN
-      let msgSpy
+      slappHelper.expectPostMessage(yes, (body) => {
+        expect(body.text).to.eql('About to die...')
+      })
       try {
-        msgSpy = await slappHelper.sendEvent(directMessageCopy)
+        await slappHelper.sendMessage(directMessageCopy)
       } catch (e) {
         expect(e).to.be.an('error')
       }
-      expect(msgSpy.callCount).to.eql(1)
-      let callArgs = msgSpy.getCall(0)
-      expect(callArgs.args[0].text).to.include('About to die...')
     })
   })
 
@@ -30,8 +34,7 @@ describe('boomtown', () => {
     it('should not respond', async () => {
       let directMessageCopy = JSON.parse(JSON.stringify(directMessage))
       directMessageCopy.event.text = 'boomtown abcdef'
-      let msgSpy = await slappHelper.sendEvent(directMessageCopy)
-      expect(msgSpy.callCount).to.eql(0)
+      await slappHelper.sendMessage(directMessageCopy)
     })
   })
 })
