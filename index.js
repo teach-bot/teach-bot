@@ -3,6 +3,8 @@ const express = require('express')
 const { resolve } = require('path')
 const Slapp = require('slapp')
 const env = require('node-env-file')
+const OAuth = require('./src/oauth')
+const db = require('./src/db')
 env(resolve(__dirname, '.env'))
 
 const context = require('./src/context.js')
@@ -24,6 +26,7 @@ var slapp = Slapp({
   }
 })
 
+OAuth(app)
 var normalizedPath = require('path').join(__dirname, 'src', 'skills')
 require('fs').readdirSync(normalizedPath).forEach(function (file) {
   require('./src/skills/' + file)(slapp)
