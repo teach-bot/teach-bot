@@ -1,12 +1,11 @@
 const db = require('../db')
-const nock = require('nock')
 
 // CREATE ASSIGNMENT
 module.exports = (slapp) => {
-  slapp.command('/assignment', 'create(.*)',  (msg, text, assignmentName) => {
+  slapp.command('/assignment', 'create(.*)', (msg, text, assignmentName) => {
     let userSlackId = msg.meta.user_id
-  
-    db.User.findOne({ where: {slackId: userSlackId} }).then(async (user) => { ///FAIL GRACEFULLY
+
+    db.User.findOne({ where: {slackId: userSlackId} }).then(async (user) => { /// FAIL GRACEFULLY
       if (user.role === 'gxstudent' || user.role === 'otherstudent') {
         msg.respond('Oops - you cannot use this feature as a student')
         return
@@ -14,9 +13,8 @@ module.exports = (slapp) => {
       if (assignmentName === '') {
         msg.respond('Oops! try again, but give the assignment a title `/assignment create AssignmentName`')
       } else {
-
-        await msg.respond({ text: 'Creating Assignment' + assignmentName})
-        db.Assignment.create({name: assignmentName.trim(), closed: false, teamId: msg.team_id})
+        await msg.respond({ text: 'Creating Assignment' + assignmentName })
+        db.Assignment.create({ name: assignmentName.trim(), closed: false, teamId: msg.team_id })
       }
     })
   })

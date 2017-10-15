@@ -5,8 +5,6 @@ const SlappIntegrationHelper = require('../../../slapp-integration-helper')
 const { expect } = require('chai')
 const db = require('../../../src/db')
 
-let yes = (_) => { return true }
-
 describe('assignment', () => {
   let slappHelper
   beforeEach(async () => {

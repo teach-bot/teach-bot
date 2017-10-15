@@ -19,8 +19,6 @@ class SlappIntegrationHelper {
     this.sendEvent = this.sendEvent.bind(this)
     this.sendMessage = this.sendMessage.bind(this)
     this.sendCommand = this.sendCommand.bind(this)
-
-
   }
 
   /**
@@ -70,8 +68,6 @@ class SlappIntegrationHelper {
     return this
   }
 
-
-
   async sendEvent (endpoint, payload, command = false) {
     let req = request(this.app)
       .post(endpoint)
@@ -81,7 +77,6 @@ class SlappIntegrationHelper {
     }
 
     let resp = await req.send(payload)
-
 
     if (this.expectations !== this.metExpectations) {
       throw Error('Not all expectations met')
