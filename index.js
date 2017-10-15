@@ -4,7 +4,6 @@ const { resolve } = require('path')
 const Slapp = require('slapp')
 const env = require('node-env-file')
 const OAuth = require('./src/oauth')
-const db = require('./src/db')
 env(resolve(__dirname, '.env'))
 
 const context = require('./src/context.js')

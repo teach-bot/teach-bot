@@ -26,7 +26,7 @@ module.exports = (server) => {
 
   // OAuth receiver - exhange, verify and store tokens & team data
   server.get('/add-to-slack', bodyParser.json(), (req, res) => {
-    console.log("in here")
+    console.log('in here')
     let params = {
       code: req.query.code,
       client_id: clientId,
@@ -63,7 +63,6 @@ module.exports = (server) => {
           </body>
           </html>
         `)
-
       })
     })
   })

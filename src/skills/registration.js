@@ -7,13 +7,13 @@ module.exports = (slapp) => {
     slapp.client.users.list({token}, (err, resp) => {
       console.log(err)
       resp.members.forEach(function (user) {
-        if (user.is_bot == false || user.name === "slackbot") {
-            db.User.create({
-                          slackId: user.id,
-                          realName: user.real_name,
-                          userName: user.name,
-                          role: "",
-                          teamId: msg.meta.team_id})
+        if (user.is_bot === false || user.name === 'slackbot') {
+          db.User.create({
+            slackId: user.id,
+            realName: user.real_name,
+            userName: user.name,
+            role: '',
+            teamId: msg.meta.team_id})
         }
       })
     })

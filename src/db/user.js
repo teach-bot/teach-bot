@@ -9,8 +9,8 @@ const User = sequelize.define('users', {
   },
   realName: { type: Sequelize.STRING },
   userName: { type: Sequelize.STRING },
-  role: {type: Sequelize.STRING },
-  slackId: {type: Sequelize.STRING },
+  role: { type: Sequelize.STRING },
+  slackId: { type: Sequelize.STRING },
   teamId: { type: Sequelize.STRING }
 })
 

@@ -8,6 +8,6 @@
   "user_name": "irfan",
   "command": "/assignment",
   "text": "list",
-  "response_url": "http://slack.com/hooksorsomething",
+  "response_url": "http://slack.com/fakehook",
   "trigger_id": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 }
