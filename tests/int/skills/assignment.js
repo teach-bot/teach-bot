@@ -5,13 +5,16 @@ const SlappIntegrationHelper = require('../../../slapp-integration-helper')
 const { expect } = require('chai')
 const db = require('../../../src/db')
 
-let yes = (_) => { return true }
-
 describe('assignment', () => {
   let slappHelper
   beforeEach(async () => {
     slappHelper = new SlappIntegrationHelper(assignment)
     await db.Assignment.sync({ force: true })
+    await db.User.sync({ force: true })
+    await new db.User({
+      slackId: 'abc',
+      role: 'gxteacher'
+    }).save()
   })
   afterEach(async () => {
     slappHelper.cleanUp()
@@ -22,9 +25,10 @@ describe('assignment', () => {
       let slashCommandCopy = JSON.parse(JSON.stringify(slashCommand))
       slashCommandCopy.command = '/assignment'
       slashCommandCopy.text = 'create name'
-      await slappHelper.expectPostMessage(yes, (body) => {
-        expect(body.text).to.eql('Creating Assignment!')
-      }).sendCommand(slashCommandCopy)
+      slashCommandCopy.user_id = 'abc'
+      let resp = await slappHelper.expectSlashResponse().sendCommand(slashCommandCopy)
+      let parsedResp = JSON.parse(resp.res.text)
+      expect(parsedResp.text).to.eql('Creating Assignment name')
     })
   })
 })

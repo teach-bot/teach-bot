@@ -1,29 +1,27 @@
 const db = require('../db')
 
-// module.exports = (slapp) => {
-
-//   console.log(';AAAAAAAAAAAAAAAAAAAAA')
-//   slapp.command('/assignment', 'create(.*)', (msg, text, assignmentName) => {
-//     console.log('sfdlk;jljkfsdjlksfdsfdjlksdfjlkljksdfjlk')
-//   })
-
-// }
-
 // CREATE ASSIGNMENT
 module.exports = (slapp) => {
   slapp.command('/assignment', 'create(.*)', (msg, text, assignmentName) => {
-    console.log('ljdsfljkkkkkkkkkkkkkkkkkkk')
-    if (assignmentName === '') {
-      msg.say('Oops! try again, but give the assignment a title `/assignment create AssignmentName`')
-    } else {
-      msg.say('Creating Assignment' + assignmentName)
-      db.Assignment.create({name: assignmentName.trim(), closed: false, teamId: msg.team_id})
-    }
+    let userSlackId = msg.meta.user_id
+
+    db.User.findOne({ where: {slackId: userSlackId} }).then(async (user) => { /// FAIL GRACEFULLY
+      if (user.role === 'gxstudent' || user.role === 'otherstudent') {
+        msg.respond('Oops - you cannot use this feature as a student')
+        return
+      }
+      if (assignmentName === '') {
+        msg.respond('Oops! try again, but give the assignment a title `/assignment create AssignmentName`')
+      } else {
+        await msg.respond({ text: 'Creating Assignment' + assignmentName })
+        db.Assignment.create({ name: assignmentName.trim(), closed: false, teamId: msg.team_id })
+      }
+    })
   })
 
 // LIST ASSIGNMENTS
   slapp.command('/assignment', 'list', async (msg) => {
-  // if (msg.user_id) == student / teacher
+    msg.respond('Listing all of the assignments!')
     var attachmentsArray = []
     let assignments = await db.Assignment.findAll({
       where: {
@@ -34,15 +32,14 @@ module.exports = (slapp) => {
       attachmentsArray.push({text: assignment.name, fallback: 'ERROR', color: '#00FF00'})
     })
     attachmentsArray.push({text: '', fallback: '', callback_id: 'show_all_callback', actions: [{name: 'more', text: 'Show All', type: 'button', value: 'nil'}]})
-    msg.say({
-      text: 'Here are all the assignments',
+    msg.respond({
+      text: '',
       attachments: attachmentsArray
     })
   })
 
-// LIST SHOW ALL
+  // LIST SHOW ALL
   slapp.action('show_all_callback', 'more', async (msg, value) => {
-  // if (msg.user_id) == student / teacher
     var attachmentsArray = []
     let assignments = await db.Assignment.findAll()
     assignments.forEach(function (assignment) {
@@ -52,15 +49,20 @@ module.exports = (slapp) => {
         attachmentsArray.push({text: assignment.name, fallback: 'ERROR', color: '#00FF00'})
       }
     })
-    msg.say({
+    msg.respond({
       text: 'Here is the *full* list of assignments, both open and closed',
       attachments: attachmentsArray
     })
   })
 
-// CLOSE ASSIGNMENT PART 1
+  // CLOSE ASSIGNMENT PART 1
   slapp.command('/assignment', 'close', async (msg) => {
-// if (msg.user_id) == student / teacher
+    let userSlackId = msg.meta.user_id
+    let user = await db.User.findOne({ where: {slackId: userSlackId} })
+    if (user.role === 'gxstudent' || user.role === 'otherstudent') {
+      msg.respond('Oops - you cannot use this feature as a student')
+      return
+    }
     var actionsArray = []
     let assignments = await db.Assignment.findAll({
       where: {
@@ -68,11 +70,9 @@ module.exports = (slapp) => {
       }
     })
     assignments.forEach(function (assignment) {
-      console.log(assignment.id.toString())
       actionsArray.push({name: 'answer', text: assignment.name, type: 'button', value: assignment.id.toString()})
     })
-    console.log('length is ', actionsArray.length)
-    msg.say({
+    msg.respond({
       text: 'Please choose which asssignment to close:',
       attachments: [
         {
@@ -85,7 +85,7 @@ module.exports = (slapp) => {
     })
   })
 
-// CLOSE ASSIGNMENT PT 2
+  // CLOSE ASSIGNMENT PT 2
   slapp.action('close_assignment_callback', 'answer', (msg, value) => {
     db.Assignment.findOne({
       where: {
@@ -98,9 +98,14 @@ module.exports = (slapp) => {
     })
   })
 
-// SUBMIT ASSIGNMENT PART 1
+  // SUBMIT ASSIGNMENT PART 1
   slapp.command('/assignment', 'submit', async (msg) => {
-// if (msg.user_id) == student / teacher
+    let userSlackId = msg.meta.user_id
+    let user = await db.User.findOne({ where: {slackId: userSlackId} })
+    if (user.role === 'faculty' || user.role === 'leadfaculty') {
+      msg.respond('Oops - you cannot use this feature as a student')
+      return
+    }
     var actionsArray = []
     let assignments = await db.Assignment.findAll({
       where: {
@@ -110,7 +115,7 @@ module.exports = (slapp) => {
     assignments.forEach(function (assignment) {
       actionsArray.push({name: 'answer', text: assignment.name, type: 'button', value: assignment.id.toString()})
     })
-    msg.say({
+    msg.respond({
       text: 'Pick the assignment you would like to submit',
       attachments: [
         {
@@ -123,7 +128,7 @@ module.exports = (slapp) => {
     })
   })
 
-// SUBMIT ASSIGNMENT PT 2
+  // SUBMIT ASSIGNMENT PT 2
   slapp.action('submit_assignment_callback', 'answer', (msg, value) => {
     db.Assignment.findOne({
       where: {
@@ -131,16 +136,15 @@ module.exports = (slapp) => {
       }
     }).then(assignment => {
       msg
-      .say('Alright! Go ahead and message me with your submission for ' + assignment.name)
+      .say('Alright! Go ahead and message me with your submission for `' + assignment.name + '`')
       .route('handleSubmission', assignment, 60)
     })
   })
 
-/// SUBMIT ASSIGNMENT PT 3
-// register a route handler
+  /// SUBMIT ASSIGNMENT PT 3
+  // register a route handler
   slapp.route('handleSubmission', (msg, assignment) => {
     db.Submission.create({assignmentId: assignment.id, userId: msg.user_id})
-    console.log('submitting assignmeent', assignment.name)
-    msg.say(['Me too', 'Noted', 'That is interesting'])
+    msg.respond('Got it, recorded your submission for: `' + assignment.name + '`')
   })
 }

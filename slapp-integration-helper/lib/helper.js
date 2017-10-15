@@ -58,6 +58,16 @@ class SlappIntegrationHelper {
     return this
   }
 
+  /**
+   * expectSlashResponse
+   * How to tell if this is the correct expectation
+   * @param {Object} matcher - Matches to the request
+   * @paramm {Object} expectation - Calls expects
+   */
+  expectSlashResponse () {
+    return this
+  }
+
   async sendEvent (endpoint, payload, command = false) {
     let req = request(this.app)
       .post(endpoint)
@@ -66,11 +76,12 @@ class SlappIntegrationHelper {
       req.type('form')
     }
 
-    await req.send(payload)
+    let resp = await req.send(payload)
 
     if (this.expectations !== this.metExpectations) {
       throw Error('Not all expectations met')
     }
+    return resp
   }
 
   async sendMessage (payload) {

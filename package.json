@@ -46,6 +46,7 @@
   "homepage": "https://github.com/teach-bot/teach-bot#readme",
   "dependencies": {
     "blanket": "^1.2.3",
+    "body-parser": "^1.18.2",
     "express": "^4.15.4",
     "nock": "^9.0.22",
     "node-env-file": "^0.1.7",
