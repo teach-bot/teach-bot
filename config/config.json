@@ -1,6 +1,9 @@
 {
   "development": {
-    "use_env_variable": "DATABASE_URL"
+    "host": "localhost",
+    "database": "teachbot",
+    "dialect": "postgres"
+   
   },
   "test": {
     "use_env_variable": "DATABASE_URL_TEST"

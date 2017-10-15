@@ -1,0 +1,9 @@
+#!/bin/bash
+
+echo "Dropping databases & re-creating them..."
+dropdb teachbot
+dropdb teachbot_test
+createdb teachbot
+createdb teachbot_test
+sequelize db:migrate
+./script/seed_dev
