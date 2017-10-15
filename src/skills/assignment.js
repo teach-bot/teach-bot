@@ -6,7 +6,7 @@ module.exports = (slapp) => {
     let userSlackId = msg.meta.user_id
 
     db.User.findOne({ where: {slackId: userSlackId} }).then(async (user) => { /// FAIL GRACEFULLY
-      if (user.role === 'gxstudent' || user.role === 'otherstudent') {
+      if (user.role === 'student' || user.role === 'otherstudent') {
         msg.respond('Oops - you cannot use this feature as a student')
         return
       }
@@ -59,7 +59,7 @@ module.exports = (slapp) => {
   slapp.command('/assignment', 'close', async (msg) => {
     let userSlackId = msg.meta.user_id
     let user = await db.User.findOne({ where: {slackId: userSlackId} })
-    if (user.role === 'gxstudent' || user.role === 'otherstudent') {
+    if (user.role === 'student' || user.role === 'otherstudent') {
       msg.respond('Oops - you cannot use this feature as a student')
       return
     }
