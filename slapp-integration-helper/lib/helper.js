@@ -12,8 +12,7 @@ class SlappIntegrationHelper {
     this.registerSkills.bind(this)(skills)
     this.app = express()
     this.slapp.attachToExpress(this.app)
-    this.expectations = 0
-    this.metExpectations = 0
+    this.expectations = []
 
     this.expectPostMessage = this.expectPostMessage.bind(this)
     this.sendEvent = this.sendEvent.bind(this)
@@ -41,20 +40,21 @@ class SlappIntegrationHelper {
    * @paramm {Object} expectation - Calls expects
    */
   expectPostMessage (matcher, expectation) {
-    this.expectations = this.expectations + 1
-    nock('https://slack.com')
-      .post('/api/chat.postMessage', (body) => {
-        console.log('MATCHED: ', this.expectations, ' : ', this.metExpectations)
-        if (matcher(body)) {
-          this.metExpectations = this.metExpectations + 1
-          expectation(body)
-          return true
-        }
-      })
-      .reply(200, JSON.stringify({
-        'ok': true,
-        'text': 'ewl'
-      }))
+    var promise = new Promise((resolve, reject) => {
+      nock('https://slack.com')
+        .post('/api/chat.postMessage', (body) => {
+          if (matcher(body)) {
+            expectation(body)
+            resolve()
+            return true
+          }
+        })
+        .reply(200, JSON.stringify({
+          'ok': true,
+          'text': 'ewl'
+        }))
+    })
+    this.expectations.push(promise)
     return this
   }
 
@@ -68,19 +68,38 @@ class SlappIntegrationHelper {
     return this
   }
 
-  async sendEvent (endpoint, payload, command = false) {
+  /**
+   * expectActionResponse
+   * Currently doesn't do anything but highlights the expectation
+   */
+  expectActionResponse () {
+    return this
+  }
+
+  async sendEvent (endpoint, payload, payloadType = 'EVENT') {
     let req = request(this.app)
       .post(endpoint)
 
-    if (command === true) {
+    if (payloadType === 'COMMAND') {
       req.type('form')
+    }
+
+    if (payloadType === 'ACTION') {
+      req.type('form')
+      // Slack encodes this in a really weird way...
+      payload = {
+        payload: JSON.stringify(payload)
+      }
     }
 
     let resp = await req.send(payload)
 
-    if (this.expectations !== this.metExpectations) {
-      throw Error('Not all expectations met')
-    }
+    await Promise.all(this.expectations) // Wait for
+    // if (this.expectations !== this.metExpectations) {
+    //   // Set a timeout to wait for all the expectations to be met
+
+    //   throw Error('Not all expectations met')
+    // }
     return resp
   }
 
@@ -89,7 +108,11 @@ class SlappIntegrationHelper {
   }
 
   async sendCommand (payload) {
-    return this.sendEvent('/slack/command', payload, true)
+    return this.sendEvent('/slack/command', payload, 'COMMAND')
+  }
+
+  async sendAction (payload) {
+    return this.sendEvent('/slack/action', payload, 'ACTION')
   }
 
   cleanUp () {

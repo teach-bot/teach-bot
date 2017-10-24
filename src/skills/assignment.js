@@ -2,51 +2,70 @@ const db = require('../db')
 
 // CREATE ASSIGNMENT
 module.exports = (slapp) => {
-  slapp.command('/assignment', 'create(.*)', (msg, text, assignmentName) => {
+  /**
+   * /assignment create [assignment name]
+   * Allow an admin to create an assignment
+   */
+  slapp.command('/assignment', 'create(.*)', async (msg, text, assignmentName) => {
     let userSlackId = msg.meta.user_id
 
-    db.User.findOne({ where: {slackId: userSlackId} }).then(async (user) => { /// FAIL GRACEFULLY
-      if (user.role === 'gxstudent' || user.role === 'otherstudent') {
-        msg.respond('Oops - you cannot use this feature as a student')
-        return
-      }
-      if (assignmentName === '') {
-        msg.respond('Oops! try again, but give the assignment a title `/assignment create AssignmentName`')
-      } else {
-        await msg.respond({ text: 'Creating Assignment' + assignmentName })
-        db.Assignment.create({ name: assignmentName.trim(), closed: false, teamId: msg.team_id })
-      }
-    })
+    // Make sure we have the user to talk about
+    let user = await db.User.findOne({ where: {slackId: userSlackId} })
+    if (!user) {
+      let text = `Oops - I couldn't find you in the system. Please contact an administrator for assistance.`
+      return msg.respond({ text })
+    }
+
+    // Check roles
+    if (user.role === 'gxstudent' || user.role === 'otherstudent') {
+      let text = 'Oops - you cannot use this feature as a student'
+      return msg.respond({ text })
+    }
+    if (assignmentName === '') {
+      let text = 'Oops! try again, but give the assignment a title `/assignment create AssignmentName`'
+      return msg.respond({ text })
+    } else {
+      await db.Assignment.create({ name: assignmentName.trim(), closed: false, teamId: msg.team_id })
+      return msg.respond({ text: 'Creating Assignment' + assignmentName })
+    }
   })
 
-// LIST ASSIGNMENTS
+  /**
+   * /assignment list
+   * Allow anyone to list assignments
+   */
   slapp.command('/assignment', 'list', async (msg) => {
-    msg.respond('Listing all of the assignments!')
-    var attachmentsArray = []
+    // msg.respond('Listing all of the assignments!')
     let assignments = await db.Assignment.findAll({
       where: {
         closed: false
       }
     })
-    assignments.forEach(function (assignment) {
-      attachmentsArray.push({text: assignment.name, fallback: 'ERROR', color: '#00FF00'})
+    let attachmentsArray = assignments.map((assignment) => {
+      return {
+        text: assignment.name,
+        fallback: 'ERROR',
+        color: '#00FF00'
+      }
     })
-    attachmentsArray.push({text: '', fallback: '', callback_id: 'show_all_callback', actions: [{name: 'more', text: 'Show All', type: 'button', value: 'nil'}]})
+    attachmentsArray.push({text: '', fallback: '', callback_id: 'assignment_list_show_all', actions: [{name: 'more', text: 'Show All', type: 'button', value: 'nil'}]})
     msg.respond({
       text: '',
       attachments: attachmentsArray
     })
   })
 
-  // LIST SHOW ALL
-  slapp.action('show_all_callback', 'more', async (msg, value) => {
-    var attachmentsArray = []
+  /**
+   * assignment_list_show_all - Used by assignment
+   * Lists all the assignments (including the closed ones)
+   */
+  slapp.action('assignment_list_show_all', 'more', async (msg, value) => {
     let assignments = await db.Assignment.findAll()
-    assignments.forEach(function (assignment) {
-      if (assignment.closed) {
-        attachmentsArray.push({text: assignment.name, fallback: 'ERROR', color: '#FF0000'})
-      } else {
-        attachmentsArray.push({text: assignment.name, fallback: 'ERROR', color: '#00FF00'})
+    let attachmentsArray = assignments.map((assignment) => {
+      return {
+        text: assignment.name,
+        fallback: 'ERROR',
+        color: assignment.closed ? '#FF0000' : '#00FF00'
       }
     })
     msg.respond({
@@ -73,7 +92,7 @@ module.exports = (slapp) => {
       actionsArray.push({name: 'answer', text: assignment.name, type: 'button', value: assignment.id.toString()})
     })
     msg.respond({
-      text: 'Please choose which asssignment to close:',
+      text: 'Please choose which assignment to close:',
       attachments: [
         {
           text: '',

@@ -28,7 +28,7 @@ describe('echo', () => {
       directMessageCopy.event.text = 'echo hello world'
       await slappHelper.expectPostMessage(yes, (body) => {
         expect(body.text).to.eql('echo hello world')
-      }).sendMessage(directMessage)
+      }).sendMessage(directMessageCopy)
     })
   })
 })

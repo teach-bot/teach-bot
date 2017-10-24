@@ -1,0 +1,30 @@
+{
+  "action_ts": "1508814158.934320",
+  "actions": [
+    {
+      "name": "more",
+      "type": "button",
+      "value": "nil"
+    }
+  ],
+  "attachment_id": "1",
+  "callback_id": "assignment_list_show_all",
+  "channel": {
+    "id": "DXXXXXXXX",
+    "name": "directmessage"
+  },
+  "is_app_unfurl": false,
+  "message_ts": "1508814116.000003",
+  "response_url": "https://hooks.slack.com/actions/T6R6PESE6/261705196838/FuZUJwRrd8W4Br8pRv6vyfbA",
+  "team": {
+    "domain": "bjschemes",
+    "id": "TXXXXXXXX"
+  },
+  "token": "EmWvBh3dqAdr94g5O95eY6ny",
+  "trigger_id": "260873515972.229227502482.6e27f6963b0b3e5705a468275898d920",
+  "type": "interactive_message",
+  "user": {
+    "id": "UXXXXXXXX",
+    "name": "anglinb"
+  }
+}

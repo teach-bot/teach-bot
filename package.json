@@ -9,7 +9,7 @@
     "test": "npm run lint && npm run test:int && npm run test:unit",
     "test:unit": "NODE_ENV=test mocha --recursive tests/unit/",
     "test:int": "NODE_ENV=test mocha --recursive lc tests/int/",
-    "test:watch": "mocha -w tests/unit/**/*.js",
+    "test:watch": "NODE_ENV=test mocha -w --recursive lc tests/int/",
     "lint": "standard",
     "lint:fix": "standard --fix",
     "migrate": "npm run migrate:up",
