@@ -3,7 +3,7 @@ const drive = require('../google-drive/drive.js')
 
 // CREATE ASSIGNMENT
 module.exports = (slapp) => {
-  slapp.command('/assignment-create', 'create(.*)', async (msg, text, assignmentName) => {
+  slapp.command('/assignment', 'create(.*)', async (msg, text, assignmentName) => {
     let userSlackId = msg.meta.user_id
     db.User.findOne({ where: {slackId: userSlackId} }).then(async (user) => { /// FAIL GRACEFULLY
       if (user.role === 'gxstudent' /* || user.role === 'otherstudent' */) {
@@ -29,7 +29,7 @@ module.exports = (slapp) => {
   })
 
 // LIST ASSIGNMENTS
-  slapp.command('/assignment-create', 'list', async (msg) => {
+  slapp.command('/assignment', 'list', async (msg) => {
     msg.respond('Listing all of the assignments!')
     var attachmentsArray = []
     let assignments = await db.Assignment.findAll({
@@ -108,7 +108,7 @@ module.exports = (slapp) => {
   })
 
   // SHOW ASSIGNMENT SUBMISSIONS
-  slapp.command('/assignment-create', 'show-submissions(.*)', async (msg, text, assignmentName) => {
+  slapp.command('/assignment', 'show-submissions(.*)', async (msg, text, assignmentName) => {
     let userSlackId = msg.meta.user_id
 
     db.User.findOne({ where: {slackId: userSlackId} }).then(async (user) => { /// FAIL GRACEFULLY
@@ -147,7 +147,7 @@ module.exports = (slapp) => {
   })
 
   // SUBMIT ASSIGNMENT PART 1
-  slapp.command('/assignment-create', 'submit', async (msg) => {
+  slapp.command('/assignment', 'submit', async (msg) => {
     let userSlackId = msg.meta.user_id
     let user = await db.User.findOne({ where: {slackId: userSlackId} })
     if (user.role === 'faculty' || user.role === 'leadfaculty') {
