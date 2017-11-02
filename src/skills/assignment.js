@@ -1,26 +1,35 @@
 const db = require('../db')
+const drive = require('../google-drive/drive.js')
 
 // CREATE ASSIGNMENT
 module.exports = (slapp) => {
-  slapp.command('/assignment', 'create(.*)', (msg, text, assignmentName) => {
+  slapp.command('/assignment-create', 'create(.*)', async (msg, text, assignmentName) => {
     let userSlackId = msg.meta.user_id
-
     db.User.findOne({ where: {slackId: userSlackId} }).then(async (user) => { /// FAIL GRACEFULLY
-      if (user.role === 'gxstudent' || user.role === 'otherstudent') {
+      if (user.role === 'gxstudent' /* || user.role === 'otherstudent' */) {
         msg.respond('Oops - you cannot use this feature as a student')
         return
       }
       if (assignmentName === '') {
         msg.respond('Oops! try again, but give the assignment a title `/assignment create AssignmentName`')
       } else {
-        await msg.respond({ text: 'Creating Assignment' + assignmentName })
-        db.Assignment.create({ name: assignmentName.trim(), closed: false, teamId: msg.team_id })
+        msg.respond({ text: 'Creating Assignment' + assignmentName })
+        let assignment = await db.Assignment.findOne({
+          where: {name: assignmentName}
+        })
+        if (assignment != null) {
+          msg.respond('Oops! There already exists a assignment with that name. try again, but with a another name')
+        } else {
+          msg.respond({ text: 'Creating Assignment' + assignmentName })
+          let dbInput = {name: assignmentName, closed: false, teamId: msg.team_id, sheetId: null}
+          drive.createAssignment(assignmentName, dbInput)
+        }
       }
     })
   })
 
 // LIST ASSIGNMENTS
-  slapp.command('/assignment', 'list', async (msg) => {
+  slapp.command('/assignment-create', 'list', async (msg) => {
     msg.respond('Listing all of the assignments!')
     var attachmentsArray = []
     let assignments = await db.Assignment.findAll({
@@ -98,8 +107,47 @@ module.exports = (slapp) => {
     })
   })
 
+  // SHOW ASSIGNMENT SUBMISSIONS
+  slapp.command('/assignment-create', 'show-submissions(.*)', async (msg, text, assignmentName) => {
+    let userSlackId = msg.meta.user_id
+
+    db.User.findOne({ where: {slackId: userSlackId} }).then(async (user) => { /// FAIL GRACEFULLY
+      if (user.role === 'gxstudent' /* || user.role === 'otherstudent' */) {
+        msg.respond('Oops - you cannot use this feature as a student')
+        return
+      }
+
+      if (assignmentName === '') {
+        msg.respond('Oops! try again, but give the assignment a title `/assignment show-submissions AssignmentName`')
+        return
+      }
+
+      msg.respond({ text: 'Retrieving Assignment: ' + assignmentName })
+
+      let assignment = await db.Assignment.findOne({
+        where: {
+          name: assignmentName
+        }
+      })
+
+      if (assignment == null) {
+        msg.respond('Oops! There does not exist an assignment with that name.')
+        return
+      }
+
+      var attachmentsArray = []
+      attachmentsArray.push({text: 'Name: ' + assignment.name + ' Link: https://docs.google.com/spreadsheets/d/' + assignment.sheetId + '/edit#gid=0', fallback: 'ERROR', color: '#00FF00'})
+
+      attachmentsArray.push({text: '', fallback: '', callback_id: 'show_all_callback', actions: [{name: 'more', text: 'Show All', type: 'button', value: 'nil'}]})
+      msg.say({
+        text: 'Here are link for that assignment',
+        attachments: attachmentsArray
+      })
+    })
+  })
+
   // SUBMIT ASSIGNMENT PART 1
-  slapp.command('/assignment', 'submit', async (msg) => {
+  slapp.command('/assignment-create', 'submit', async (msg) => {
     let userSlackId = msg.meta.user_id
     let user = await db.User.findOne({ where: {slackId: userSlackId} })
     if (user.role === 'faculty' || user.role === 'leadfaculty') {
@@ -143,8 +191,13 @@ module.exports = (slapp) => {
 
   /// SUBMIT ASSIGNMENT PT 3
   // register a route handler
-  slapp.route('handleSubmission', (msg, assignment) => {
-    db.Submission.create({assignmentId: assignment.id, userId: msg.user_id})
+  slapp.route('handleSubmission', async (msg, assignment) => {
+    let userSlackId = msg.meta.user_id
+    let user = await db.User.findOne({ where: {slackId: userSlackId} })
+    let link = 'www.templink1.com' // TODO NEED TO UPDATE THIS
+    let values = {name: user.realName, link: link}
+    drive.addSubmission(assignment.sheetId, values)
+    db.Submission.create({assignmentId: assignment.id, userId: msg.meta.user_id})
     msg.respond('Got it, recorded your submission for: `' + assignment.name + '`')
   })
 }
