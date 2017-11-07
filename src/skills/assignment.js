@@ -6,7 +6,7 @@ module.exports = (slapp) => {
     let userSlackId = msg.meta.user_id
 
     db.User.findOne({ where: {slackId: userSlackId} }).then(async (user) => { /// FAIL GRACEFULLY
-      if (user.role === 'gxstudent' || user.role === 'otherstudent') {
+      if (user.role === 'student' || user.role === 'otherstudent') {
         msg.respond('Oops - you cannot use this feature as a student')
         return
       }
@@ -14,7 +14,7 @@ module.exports = (slapp) => {
         msg.respond('Oops! try again, but give the assignment a title `/assignment create AssignmentName`')
       } else {
         await msg.respond({ text: 'Creating Assignment' + assignmentName })
-        db.Assignment.create({ name: assignmentName.trim(), closed: false, teamId: msg.team_id })
+        db.Assignment.create({ name: assignmentName.trim(), closed: false, teamId: msg.meta.team_id })
       }
     })
   })
@@ -59,7 +59,7 @@ module.exports = (slapp) => {
   slapp.command('/assignment', 'close', async (msg) => {
     let userSlackId = msg.meta.user_id
     let user = await db.User.findOne({ where: {slackId: userSlackId} })
-    if (user.role === 'gxstudent' || user.role === 'otherstudent') {
+    if (user.role === 'student' || user.role === 'otherstudent') {
       msg.respond('Oops - you cannot use this feature as a student')
       return
     }
@@ -144,7 +144,7 @@ module.exports = (slapp) => {
   /// SUBMIT ASSIGNMENT PT 3
   // register a route handler
   slapp.route('handleSubmission', (msg, assignment) => {
-    db.Submission.create({assignmentId: assignment.id, userId: msg.user_id})
+    db.Submission.create({assignmentId: assignment.id, userId: msg.meta.user_id, submissionLink: msg.body.event.text, teamId: msg.meta.team_id})
     msg.respond('Got it, recorded your submission for: `' + assignment.name + '`')
   })
 }

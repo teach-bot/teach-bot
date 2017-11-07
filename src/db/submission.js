@@ -10,7 +10,7 @@ const Submission = sequelize.define('submissions', {
   assignmentId: { type: Sequelize.INTEGER },
   userId: { type: Sequelize.STRING },
   submissionLink: { type: Sequelize.STRING },
-  teamId: { type: Sequelize.INTEGER }
+  teamId: { type: Sequelize.STRING }
   // submissions: { type: Has Many }
 })
 
