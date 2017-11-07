@@ -144,7 +144,7 @@ module.exports = (slapp) => {
   /// SUBMIT ASSIGNMENT PT 3
   // register a route handler
   slapp.route('handleSubmission', (msg, assignment) => {
-    db.Submission.create({assignmentId: assignment.id, userId: msg.meta.user_id, submissionLink: msg.body.event.text,  teamId: msg.meta.team_id})
+    db.Submission.create({assignmentId: assignment.id, userId: msg.meta.user_id, submissionLink: msg.body.event.text, teamId: msg.meta.team_id})
     msg.respond('Got it, recorded your submission for: `' + assignment.name + '`')
   })
 }

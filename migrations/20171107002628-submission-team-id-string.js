@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
@@ -11,7 +11,7 @@ module.exports = {
   down: (queryInterface, Sequelize) => {
     queryInterface.changeColumn('submissions', 'teamId', {
       type: Sequelize.INTEGER,
-      defaultValue: "X"
+      defaultValue: 'X'
     })
   }
-};
+}
