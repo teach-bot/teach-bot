@@ -55,8 +55,7 @@ class Authentication {
         rl.close()
         oauth2Client.getToken(code, (err, token) => {
           if (err) {
-            console.log('Error while trying to retrieve access token', err)
-            reject()
+            reject(err)
           }
           oauth2Client.credentials = token
           this.storeToken(token)
