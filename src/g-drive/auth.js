@@ -17,7 +17,7 @@ class Authentication {
     })
   }
   getClientSecret () {
-    return require('./credential_secret.json')
+    return require('./credential_secret.json') // THIS NEEDS TO BE DONE TRHOUGH THE ENV 
   }
   authorize (credentials) {
     var clientSecret = credentials.installed.client_secret
