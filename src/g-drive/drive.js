@@ -148,5 +148,13 @@ module.exports = {
     return authentication.authenticate().then((auth) => {
       addNewRow(auth, sheetId, values)
     })
+  },
+
+  getAuthLink: function () {
+    return authentication.getNewTokenLink()
+  },
+
+  storeAuthLink: function (tokenLink,teamId) {
+    authentication.storeNewTokenLink(tokenLink,teamId)
   }
 }
