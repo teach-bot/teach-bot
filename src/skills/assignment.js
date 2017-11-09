@@ -77,21 +77,31 @@ module.exports = (slapp) => {
   // CLOSE ASSIGNMENT PART 1
   slapp.command('/assignment', 'close', async (msg) => {
     let userSlackId = msg.meta.user_id
+
+    // Find the user
     let user = await db.User.findOne({ where: {slackId: userSlackId} })
     if (user.role === 'gxstudent' || user.role === 'otherstudent') {
-      msg.respond('Oops - you cannot use this feature as a student')
-      return
+      let text = 'Oops - you cannot use this feature as a student'
+      return msg.respond({ text })
     }
-    var actionsArray = []
+
+    // Grab assignment
     let assignments = await db.Assignment.findAll({
       where: {
         closed: false
       }
     })
-    assignments.forEach(function (assignment) {
-      actionsArray.push({name: 'answer', text: assignment.name, type: 'button', value: assignment.id.toString()})
+    let actionsArray = assignments.map((assignment) => {
+      return {
+        name: 'answer',
+        text: assignment.name,
+        type: 'button',
+        value: assignment.id.toString()
+      }
     })
-    msg.respond({
+
+    // Return actions
+    return msg.respond({
       text: 'Please choose which assignment to close:',
       attachments: [
         {
@@ -121,6 +131,7 @@ module.exports = (slapp) => {
   slapp.command('/assignment', 'submit', async (msg) => {
     let userSlackId = msg.meta.user_id
     let user = await db.User.findOne({ where: {slackId: userSlackId} })
+
     if (user.role === 'faculty' || user.role === 'leadfaculty') {
       msg.respond('Oops - you cannot use this feature as a student')
       return

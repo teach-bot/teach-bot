@@ -1,6 +1,7 @@
 
 const assignment = require('../../../src/skills/assignment')
 const slashCommand = require('../../fixtures/slash_command')
+const buttonAction = require('../../fixtures/button_action')
 const SlappIntegrationHelper = require('../../../slapp-integration-helper')
 const { expect } = require('chai')
 const db = require('../../../src/db')
@@ -74,29 +75,72 @@ describe('assignment', () => {
     })
   })
 
-  // describe('list', () => {
-  //   let assignment1
-  //   let assignment2
-  //   beforeEach(() => {
-  //     assignment1 = await db.Assignment.create({
-  //       name: 'Assignment 1',
-  //       closed: false,
-  //       teamId: msg.team_id
-  //     })
-  //     assignment2 = await db.Assignment.create({
-  //       name: 'Assignment 2',
-  //       closed: true,
-  //       teamId: msg.team_id
-  //     })
-  //   })
-  //   it('should list the assignments', async () => {
-  //     let slashCommandCopy = JSON.parse(JSON.stringify(slashCommand))
-  //     slashCommandCopy.command = '/assignment'
-  //     slashCommandCopy.text = 'list'
-  //     slashCommandCopy.user_id = 'abc' // Uknown user
-  //     let resp = await slappHelper.expectSlashResponse().sendCommand(slashCommandCopy)
-  //     let parsedResp = resp.res.text
-  //     expect(parsedResp).to.eql('Oops! try again, but give the assignment a title `/assignment create AssignmentName`')
-  //   })
-  // })
+  describe('list', () => {
+    beforeEach(async () => {
+      await db.Assignment.create({
+        name: 'Assignment 1',
+        closed: false,
+        teamId: 'TXXXXXXXX'
+      })
+      await db.Assignment.create({
+        name: 'Assignment 2',
+        closed: true,
+        teamId: 'TXXXXXXXX'
+      })
+    })
+
+    it('should list the assignments', async () => {
+      let slashCommandCopy = JSON.parse(JSON.stringify(slashCommand))
+      slashCommandCopy.command = '/assignment'
+      slashCommandCopy.text = 'list'
+      slashCommandCopy.user_id = 'abc'
+      let resp = await slappHelper.expectSlashResponse().sendCommand(slashCommandCopy)
+      let parsedResp = JSON.parse(resp.res.text)
+      expect(parsedResp.attachments.length).to.eql(2)
+      expect(parsedResp.attachments[0].text).to.eql('Assignment 1')
+      expect(parsedResp.attachments[1].callback_id).to.eql('assignment_list_show_all')
+    })
+
+    it('should list the all assignments when the button is pressed', async () => {
+      let buttonActionCopy = JSON.parse(JSON.stringify(buttonAction))
+      buttonActionCopy.command = '/assignment'
+      buttonActionCopy.text = 'list'
+      buttonActionCopy.user_id = 'abc' // Uknown user
+
+      let resp = await slappHelper.expectActionResponse().sendAction(buttonActionCopy)
+      let parsedResp = JSON.parse(resp.res.text)
+
+      expect(parsedResp.attachments.length).to.eql(2)
+      expect(parsedResp.attachments[0].text).to.eql('Assignment 1')
+      expect(parsedResp.attachments[1].text).to.eql('Assignment 2')
+    })
+  })
+
+  describe.only('close', () => {
+    beforeEach(async () => {
+      await db.Assignment.create({
+        name: 'Assignment 1',
+        closed: false,
+        teamId: 'TXXXXXXXX'
+      })
+      await db.Assignment.create({
+        name: 'Assignment 2',
+        closed: true,
+        teamId: 'TXXXXXXXX'
+      })
+    })
+
+    it('should list all the unclosed assignments', async () => {
+      let slashCommandCopy = JSON.parse(JSON.stringify(slashCommand))
+      slashCommandCopy.command = '/assignment'
+      slashCommandCopy.text = 'close'
+      slashCommandCopy.user_id = 'abc'
+
+      let resp = await slappHelper.expectSlashResponse().sendCommand(slashCommandCopy)
+      let parsedResp = JSON.parse(resp.res.text)
+
+      expect(parsedResp.attachments.length).to.eql(1)
+      expect(parsedResp.attachments[0].text).to.eql('Assignment 1')
+    })
+  })
 })
