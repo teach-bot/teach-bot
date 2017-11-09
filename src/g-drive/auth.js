@@ -51,8 +51,7 @@ class Authentication {
         console.log("CODE IS "+code)
         oauth2Client.getToken(code, (err, token) => {
           if (err) {
-            console.log('Error while trying to retrieve access token', err)
-            reject()
+            reject(err)
           }
 
           console.log("TOKEN IN "+JSON.stringify(token))

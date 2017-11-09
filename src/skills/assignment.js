@@ -212,7 +212,6 @@ module.exports = (slapp) => {
     })
   })
 
-
   /// SUBMIT ASSIGNMENT PT 3/3
   // register a route handler for assignment submission
   slapp.route('handleSubmission', async (msg, assignment) => {
@@ -220,7 +219,8 @@ module.exports = (slapp) => {
     let user = await db.User.findOne({ where: {slackId: userSlackId} })
     let values = {name: user.realName, link: msg.body.event.text}
     drive.addSubmission(assignment.sheetId, values)
-    db.Submission.create({assignmentId: assignment.id,submissionLink: msg.body.event.text, userId: "sTE", teamId:msg.meta.team_id})
+
+    db.Submission.create({assignmentId: assignment.id, submissionLink: msg.body.event.text, userId: msg.meta.user_id, teamId: msg.meta.team_id})
     msg.respond('Got it, recorded your submission for: `' + assignment.name + '`')
   })
 }
