@@ -32,3 +32,9 @@ require('fs').readdirSync(normalizedPath).forEach(function (file) {
 })
 
 slapp.attachToExpress(app).listen(process.env.PORT)
+
+process.on('unhandledRejection', (reason, p) => {
+  console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+  console.log('TRACE', reason.stack)
+  // application specific logging, throwing an error, or other logic here
+});
