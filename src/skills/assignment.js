@@ -149,7 +149,9 @@ module.exports = (slapp) => {
 
   /// Register Drive Part 1/2
   slapp.command('/assignment', 'register-drive', async (msg, text, assignmentName) => {
-    if (user.role === 'leadfaculty') {
+    let userSlackId = msg.meta.user_id
+    let user = await db.User.findOne({ where: {slackId: userSlackId} })
+    if (!user || user.role === 'leadfaculty') {
       msg.respond('Oops - only a lead faculty member can access this feature')
       return
     }
