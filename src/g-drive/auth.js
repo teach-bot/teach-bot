@@ -8,7 +8,6 @@ const TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH || process.env.USERP
 const TOKEN_PATH = TOKEN_DIR + 'sheets.googleapis.com-nodejs-quickstart.json' // the file which will contain the token
 
 class Authentication {
-
   authenticate () {
     return new Promise((resolve, reject) => {
       let credentials = this.getClientSecret()
@@ -17,7 +16,7 @@ class Authentication {
     })
   }
   getClientSecret () {
-    return require('./credential_secret.json') // THIS NEEDS TO BE DONE TRHOUGH THE ENV 
+    return require('./credential_secret.json') // THIS NEEDS TO BE DONE TRHOUGH THE ENV
   }
   authorize (credentials) {
     var clientSecret = credentials.installed.client_secret
@@ -26,15 +25,15 @@ class Authentication {
     var auth = new GoogleAuth()
     var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl)
 
-    return new Promise( async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       let dbToken = await db.AuthToken.findOne()
-      console.log("TOKEN IS "+dbToken)
+      console.log('TOKEN IS ' + dbToken)
       oauth2Client.credentials = JSON.parse(dbToken.token)
       resolve(oauth2Client)
     })
   }
 
-  //This function is for command line
+  // This function is for command line
   getNewToken (oauth2Client, callback) {
     return new Promise((resolve, reject) => {
       var authUrl = oauth2Client.generateAuthUrl({
@@ -48,13 +47,13 @@ class Authentication {
       })
       rl.question('\n\nEnter the code from that page here: ', (code) => {
         rl.close()
-        console.log("CODE IS "+code)
+        console.log('CODE IS ' + code)
         oauth2Client.getToken(code, (err, token) => {
           if (err) {
             reject(err)
           }
 
-          console.log("TOKEN IN "+JSON.stringify(token))
+          console.log('TOKEN IN ' + JSON.stringify(token))
           oauth2Client.credentials = token
           this.storeToken(token)
           resolve(oauth2Client)
@@ -63,7 +62,7 @@ class Authentication {
     })
   }
 
-  //This function is for command line
+  // This function is for command line
   storeToken (token) {
     try {
       fs.mkdirSync(TOKEN_DIR)
@@ -76,25 +75,24 @@ class Authentication {
     console.log('Token stored to ' + TOKEN_PATH)
   }
 
-
-  //This function is for slack UI
-  getNewTokenLink() {
+  // This function is for slack UI
+  getNewTokenLink () {
     let credentials = this.getClientSecret()
     var clientSecret = credentials.installed.client_secret
     var clientId = credentials.installed.client_id
     var redirectUrl = credentials.installed.redirect_uris[0]
     var auth = new GoogleAuth()
     var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl)
-   
+
     var authUrl = oauth2Client.generateAuthUrl({
-        access_type: 'offline',
-        scope: SCOPES
-      })
+      access_type: 'offline',
+      scope: SCOPES
+    })
     return authUrl
   }
 
-  //This function is for slack UI
-  storeNewTokenLink(code, team_id) {
+  // This function is for slack UI
+  storeNewTokenLink (code, teamId) {
     let credentials = this.getClientSecret()
     var clientSecret = credentials.installed.client_secret
     var clientId = credentials.installed.client_id
@@ -104,14 +102,13 @@ class Authentication {
     oauth2Client.getToken(code, (err, token) => {
       if (err) {
         console.log('Error while trying to retrieve access token', err)
-        reject()
+        return
       }
 
-      let dbInput = {token: JSON.stringify(token), teamId: team_id}
+      let dbInput = {token: JSON.stringify(token), teamId}
       db.AuthToken.create(dbInput)
     })
   }
-
 }
 
 module.exports = new Authentication()

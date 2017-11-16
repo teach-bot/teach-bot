@@ -154,7 +154,7 @@ module.exports = {
     return authentication.getNewTokenLink()
   },
 
-  storeAuthLink: function (tokenLink,teamId) {
-    authentication.storeNewTokenLink(tokenLink,teamId)
+  storeAuthLink: function (tokenLink, teamId) {
+    authentication.storeNewTokenLink(tokenLink, teamId)
   }
 }

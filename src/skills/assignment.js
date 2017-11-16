@@ -21,7 +21,7 @@ module.exports = (slapp) => {
           msg.respond('Oops! There already exists a assignment with that name. try again, but with a another name')
         } else {
           msg.respond({ text: 'Creating Assignment' + assignmentName })
-          console.log("TEAM ID IS "+ msg.team_id)
+          console.log('TEAM ID IS ' + msg.team_id)
           let dbInput = {name: assignmentName, closed: false, teamId: msg.team_id, sheetId: null}
           drive.createAssignment(assignmentName, dbInput)
         }
@@ -158,18 +158,16 @@ module.exports = (slapp) => {
 
     let authURL = await drive.getAuthLink()
     msg
-      .say('Alright! Authorize this app by visiting this url: \n '+authURL)
+      .say('Alright! Authorize this app by visiting this url: \n ' + authURL)
       .route('handleAuthLink', 200)
   })
-  
+
   // Register Driver Part 2/2
   // register a route handler for storing auth Link
   slapp.route('handleAuthLink', async (msg) => {
     msg.respond('Got it, recorded your submission for: `' + msg.body.event.text + '`')
-    drive.storeAuthLink(msg.body.event.text,msg.team_id)
+    drive.storeAuthLink(msg.body.event.text, msg.team_id)
   })
-
-
 
   // SUBMIT ASSIGNMENT PART 1/3
   slapp.command('/assignment', 'submit', async (msg) => {

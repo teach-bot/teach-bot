@@ -1,17 +1,17 @@
-'use strict';
+'use strict'
 
 module.exports = {
   up: function (queryInterface, Sequelize) {
     queryInterface.changeColumn('authtokens', 'token', {
       type: Sequelize.TEXT,
-      defaultValue: '',
+      defaultValue: ''
     })
   },
 
   down: function (queryInterface, Sequelize) {
     queryInterface.changeColumn('authtokens', 'token', {
       type: Sequelize.CHAR,
-      defaultValue: '',
+      defaultValue: ''
     })
   }
-};
+}
