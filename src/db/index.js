@@ -3,13 +3,15 @@ const Convo = require('./convo')
 const Assignment = require('./assignment')
 const Submission = require('./submission')
 const User = require('./user')
+const AuthToken = require('./authtoken')
 
 const models = {
   Team,
   Convo,
   Assignment,
   Submission,
-  User
+  User,
+  AuthToken
 }
 
 Assignment.hasMany(Submission, {foreignKey: 'assignmentId', sourceKey: 'id'})

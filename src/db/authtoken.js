@@ -1,16 +1,14 @@
 const Sequelize = require('sequelize')
 const sequelize = require('./db')
 
-const Assignment = sequelize.define('assignments', {
+const AuthToken = sequelize.define('authtokens', {
   id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  name: { type: Sequelize.STRING },
-  sheetId: { type: Sequelize.STRING },
-  closed: { type: Sequelize.BOOLEAN },
+  token: { type: Sequelize.STRING },
   teamId: { type: Sequelize.STRING }
 })
 
-module.exports = Assignment
+module.exports = AuthToken
